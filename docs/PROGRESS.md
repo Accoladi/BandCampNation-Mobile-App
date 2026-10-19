@@ -45,3 +45,15 @@ Performed October 19, 2026. Status: **implementation and Android reader checks c
 - API 36 ARM64 Expo Go journey passed the 15-article catalog, article opening, book contents and a book section opened while emulator Wi-Fi/data were disabled. Networking was restored afterward.
 - Screenshots: [native article](evidence/android-reader.png), [offline book](evidence/android-book-offline.png).
 - Public radio API shape was verified separately: 81 published, unrestricted HTTPS-playable tracks returned; radio playback is the next task.
+
+## Implement BandCamp Radio playback and track browsing
+
+Performed October 19, 2026. Status: **implementation and Android streaming checks complete; iOS playback acceptance pending**.
+
+- Connected the existing public `/api/radio/songs` service without AWS credentials or SDKs. Verified 81 published, unrestricted HTTPS tracks in the live response.
+- Added boundary validation, duplicate/private/draft/unsafe-URL exclusion, sorting, local title/artist/tag search, incremental browsing and selected-track feedback.
+- Implemented native Expo Audio play/pause, track selection, previous/next, replay after completion, ±15-second seek, native duration/progress, loading/buffering, connection timeout and retry states. Radio is explicitly online; reading remains bundled.
+- `npm run check` passed (six checks including malformed payload, security boundaries, public endpoint behavior and HTTP failure).
+- Actual API 36 ARM64 Expo Go playback passed play → pause → next → playing → pause. Native playback progress advanced (observed 0:25 / 2:44 on a streamed track). [Playback screenshot](evidence/android-radio-playing.png).
+- The Android UI driver now avoids stale XML after UIAutomator idle failures. Playback status updates use a two-second interval to reduce screen re-renders; media playback itself remains native.
+- Expo account check returned `Not logged in`. EAS cloud/signing/distribution remains blocked until account setup. App-background/navigation and interrupted-network recovery checks are covered in the recovery task.
