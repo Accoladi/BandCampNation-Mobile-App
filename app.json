@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "BandCampNation",
+    "slug": "bandcampnation-mobile",
+    "version": "0.1.0",
+    "scheme": "bandcampnation",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.bandcampnation.mobile",
+      "supportsTablet": true,
+      "config": { "usesNonExemptEncryption": false }
+    },
+    "android": {
+      "package": "com.bandcampnation.mobile",
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
+    },
+    "web": { "output": "static", "favicon": "./assets/images/icon.png" },
+    "plugins": [
+      "expo-router",
+      ["expo-splash-screen", { "backgroundColor": "#071426" }],
+      ["expo-audio", { "enableBackgroundPlayback": false, "microphonePermission": false, "recordAudioAndroid": false }],
+      "expo-asset"
+    ],
+    "experiments": { "typedRoutes": true }
+  }
+}
