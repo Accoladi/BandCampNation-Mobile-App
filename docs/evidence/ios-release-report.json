@@ -1,0 +1,21 @@
+{
+  "performedAt": "2026-10-19T18:31:53Z",
+  "sourceCommit": "3561ff114c83f87bafc4ab8171aa2a59102e0490",
+  "run": "https://github.com/Accoladi/BandCampNation-Mobile-App/actions/runs/39299528440",
+  "status": "success",
+  "runtime": "iOS simulator",
+  "deviceNames": [
+    "iPhone 17 Pro"
+  ],
+  "sdk": "iphonesimulator26.5",
+  "minimumOSVersion": "16.4",
+  "passed": [
+    "Home/navigation",
+    "native article",
+    "native book",
+    "radio playback/background pause/next/pause",
+    "Trivia progression",
+    "Tic Tap Tone win",
+    "Name That Tune playback/clue"
+  ]
+}

@@ -13,30 +13,30 @@ Performed October 19, 2026. Status: **complete**.
 
 ## Bootstrap BandCampNation Expo app and test Android/iOS launch
 
-Performed October 19, 2026. Status: **implementation complete; iOS launch acceptance blocked**.
+Performed October 19, 2026. Status: **native Android/iOS launches verified; physical-device acceptance pending**.
 
 - Created the standalone Expo/TypeScript project using the reference lockfile and original BandCampNation logo. Proposed identifiers are `com.bandcampnation.mobile`; owner confirmation is needed before signing.
 - `npm ci` passed. `npm run check` passed on isolated Node 24.21.0: lint, strict TypeScript and manifest/security checks.
 - Android and iOS Hermes bundle exports passed. These are not signed binary builds.
 - Created a temporary API 36 ARM64 Android emulator, installed Expo Go SDK 57, and launched the app through Metro on port 8082. Native UI text assertions passed; screenshot: [Android bootstrap](evidence/android-bootstrap.png).
-- iOS launch remains blocked: full Xcode and `simctl` are absent. No iOS runtime claim is made.
+- Local iOS launch was initially blocked because full Xcode and `simctl` are absent. Hosted native iOS launch was subsequently verified in the final QA task below.
 - Setup commands and environment/credential boundaries are in SETUP.md. The installed Homebrew Node 24 has a missing simdjson dylib; verification used an isolated official Node 24 runtime rather than changing system software.
 - Review/demo: `npm ci && npm start`, then open on Android with Expo Go. GitHub push evidence is the remote commit matching this task title.
 
 ## Build native navigation, Home, theme and accessibility
 
-Performed October 19, 2026. Status: **implementation and Android navigation checks complete; assistive-technology acceptance pending**.
+Performed October 19, 2026. Status: **native Android/iOS navigation verified; assistive-technology acceptance pending**.
 
 - Added branded native Home, shared header/menu, and Home/Radio/Articles/Books/Entertainment destinations using Expo Router.
 - Adapted original BandCampNation hero/logo/copy and palette. Reused the reference shell and 48-point controls, scalable text, semantic labels/headings and modal isolation; made the menu scrollable for large text.
 - Fixed a real native compatibility issue found during testing: Expo Router's Slot requires flattened styles on Link children. Primary navigation now uses flattened styles; brand styles are plain objects.
 - `npm run check` passed (lint, TypeScript, manifest and route checks).
 - API 36 ARM64 Expo Go UI-tree journey passed Radio, Articles, Books, Entertainment, return Home and menu open/close. Screenshots: [Home](evidence/android-home.png), [menu](evidence/android-navigation.png).
-- Remaining destination bodies are deliberately implemented in their following tasks. Human VoiceOver/TalkBack and iOS checks remain open; see ACCESSIBILITY.md.
+- Destination bodies were completed in the following tasks. Native iOS navigation was subsequently verified in final QA; human VoiceOver/TalkBack checks remain open (ACCESSIBILITY.md).
 
 ## Connect content services and migrate articles/books reader
 
-Performed October 19, 2026. Status: **implementation and Android reader checks complete; iOS device acceptance pending**.
+Performed October 19, 2026. Status: **native Android/iOS reader checks passed; physical-device acceptance pending**.
 
 - Migrated all 15 original articles and both complete books: 64 native reading sections total, including 33 book sections. Bundled the original covers and decoded text; no server modules/credentials or HTML runtime enter Metro.
 - Added searchable native libraries, article/chapter reading, book contents, previous/next sections, scalable/selectable text and missing-document/section handling. Navigating sections resets scroll position.
@@ -48,7 +48,7 @@ Performed October 19, 2026. Status: **implementation and Android reader checks c
 
 ## Implement BandCamp Radio playback and track browsing
 
-Performed October 19, 2026. Status: **implementation and Android streaming checks complete; iOS playback acceptance pending**.
+Performed October 19, 2026. Status: **native Android/iOS playback checks passed; physical-device acceptance pending**.
 
 - Connected the existing public `/api/radio/songs` service without AWS credentials or SDKs. Verified 81 published, unrestricted HTTPS tracks in the live response.
 - Added boundary validation, duplicate/private/draft/unsafe-URL exclusion, sorting, local title/artist/tag search, incremental browsing and selected-track feedback.
@@ -60,7 +60,7 @@ Performed October 19, 2026. Status: **implementation and Android streaming check
 
 ## Build entertainment hub and migrate Trivia/Tic-Tac-Toe
 
-Performed October 19, 2026. Status: **implementation and Android game checks complete; iOS device acceptance pending**.
+Performed October 19, 2026. Status: **native Android/iOS game checks passed; physical-device acceptance pending**.
 
 - Added native entertainment cards with original BandCampNation artwork and two offline playable games.
 - Reused the BetweenBands native Trivia screen and ten source-matched questions with scoring, answer feedback, next/results and replay. Reused native Tic Tap Tone with single/two-player modes, win/tie, reset and computer win/block moves.
@@ -72,7 +72,7 @@ Performed October 19, 2026. Status: **implementation and Android game checks com
 
 ## Adapt audio games and audit remaining mobile game parity
 
-Performed October 19, 2026. Status: **native adaptation and Android check complete; mentor parity review and iOS acceptance pending**.
+Performed October 19, 2026. Status: **native Android/iOS audio-game checks passed; mentor parity review and physical-device acceptance pending**.
 
 - Added native Name That Tune using all 40 original BandCampNation ten-second snippets and three-clue sets, bundled for offline use.
 - Reused tested shuffle/unique-round/choice generation and the reference native audio screen. Added three clues per game, listen-before-answer, score/results/replay, loading/error/retry and native progress/play/pause.
@@ -83,7 +83,7 @@ Performed October 19, 2026. Status: **native adaptation and Android check comple
 
 ## Add network recovery, lifecycle handling and app polish
 
-Performed October 19, 2026. Status: **implementation and standalone Android recovery checks complete; iOS/physical interruption checks pending**.
+Performed October 19, 2026. Status: **Android recovery and Android/iOS background-pause checks passed; physical interruption checks pending**.
 
 - Added shared audio lifecycle handling, exclusive focus/no recording, explicit pause on screen blur and both background/foreground transitions. Native testing exposed Expo Audio's automatic foreground resume; pausing again on foreground fixes it.
 - Added active/focused radio completion advancement, native-position seeking, catalog refresh retaining prior data on error, uncached public fetches, artwork retry/fallback, clip exception handling, unknown-route recovery and a root retry boundary.
@@ -92,15 +92,28 @@ Performed October 19, 2026. Status: **implementation and standalone Android reco
 - `npm run check` passed; current iOS and Android Hermes exports passed.
 - Standalone API 36 ARM64 APK checks passed background → foreground → paused, forced Wi-Fi/data loss → radio error, network restoration → retry → playback → pause. Native audio-state inspection after navigating to Articles showed the app's players paused.
 - Evidence: [background paused](evidence/android-background-paused.png), [offline radio](evidence/android-radio-offline.png), [restored playback](evidence/android-radio-recovered.png).
-- Physical headset/call interruptions and human screen-reader testing remain open. Local full Xcode remains unavailable; hosted iOS simulator QA is being prepared next.
+- Physical headset/call interruptions and human screen-reader testing remain open. Local full Xcode remains unavailable; hosted iOS simulator QA subsequently passed in the following task.
 
 ## Run Android/iOS device QA and fix MVP defects
 
-Performed October 19, 2026. Status: **Android Release QA passed; hosted iOS QA in progress**.
+Performed October 19, 2026. Status: **native Android Release and iOS simulator QA passed; physical-device and human accessibility checks pending**.
 
 - Added a repeatable native Android driver and hosted iOS Release-build/XCTest workflow with screenshot/result/demo artifacts. Local Python/Ruby/Swift syntax and workflow YAML checks passed.
 - Built and installed the standalone ARM64 Android Release APK with embedded JavaScript, all reading content and 40 MP3 clips. All nine native smoke stages passed: Home, offline article/book, live radio, background pause, complete 10/10 Trivia/replay, Tic Tap Tone tie, offline audio game and 200% text navigation. [Machine-readable result](evidence/android-release-report.json), [radio](evidence/android-release-radio.png), [offline audio](evidence/android-release-audio.png), [large text](evidence/android-release-large-text.png).
-- Release permission inspection found no microphone, storage or overlay permission. The demo is debug-key signed, not an internal/store signing artifact. APK SHA-256: `a38e09a310a73383a41a839910811361e601e6222a031b56f4ecbbff81f52078` (84,428,076 bytes).
+- Release permission inspection found no microphone, storage or overlay permission. The demo is debug-key signed, not an internal/store signing artifact. APK SHA-256: `33ea4057e7dc9567365e73662b4e6b0ea340c7eccf057bf30f3eeb0b17eef683` (84,428,076 bytes).
 - Applied Expo Doctor's six recommended SDK 57 patch updates. `npm run check` passed afterward. Compatible lockfile security updates removed the reported critical advisory; remaining upstream entries are documented in DEPENDENCY_REVIEW.md.
 - Current Android/iOS exports passed a server SDK/credential-marker check. No website/server source was changed.
-- Expo Doctor passed 21/21. Hosted checks passed clean install, lint, TypeScript, all nine tests and both exports. The [first iOS run](https://github.com/Accoladi/BandCampNation-Mobile-App/actions/runs/39282437969) generated the project/pods and booted a simulator, then failed because the new UI-test target had no product name. Set its explicit product name and reran the native build; iOS acceptance is pending that actual result. Physical-device and assistive-technology acceptance remains open.
+- Expo Doctor passed 21/21. Hosted checks passed clean install, lint, TypeScript, all nine tests and both exports.
+- The [final native iOS run](https://github.com/Accoladi/BandCampNation-Mobile-App/actions/runs/39299528440) passed the complete XCTest journey: Home/navigation, native article/book, live radio/background pause/next/pause, Trivia progression, Tic Tap Tone win and bundled Name That Tune playback/clue. The iPhone 17 Pro simulator app uses the iOS 26.5 SDK with a 16.4 minimum deployment target; it is not an iPhone-device signing artifact.
+- Native QA fixed the generated test product name, grouped iOS button-label lookup, clipped iOS typography and fixed-height headers. The final build uses iOS system display text and headers that can grow with larger text. Evidence: [run report](evidence/ios-release-report.json), [Home](evidence/ios-home.png), [reader](evidence/ios-reader.png), [radio](evidence/ios-radio.png), [Tic Tap Tone win](evidence/ios-tic-win.png), [audio game](evidence/ios-audio-game.png). Physical-device and assistive-technology acceptance remains open.
+
+## Produce test builds and complete intern release handoff
+
+Performed October 19, 2026. Status: **Android/iOS simulator demos and handoff ready; signed internal distribution blocked by account access**.
+
+- Produced the installable Android ARM64 demo APK and retained its successful Gradle build log, SHA-256 receipt and native smoke report locally under `artifacts/`. The binary includes JavaScript, all reading content and 40 audio clips and launches without Metro. It uses a generated debug signing key.
+- Produced the unsigned iOS simulator demo archive with embedded JavaScript and all 40 audio clips. The successful hosted run retains the app, screenshots and XCTest result bundle; local copies are under `artifacts/`. It cannot install on a physical iPhone.
+- Added standard Expo native Debug/Release commands and minimal EAS preview/device and simulator profiles, validated against the pinned EAS 24.10.0 schema. No custom release tooling, production submission workflow or invented account/project identifiers.
+- Final clean `npm ci`, lint, strict TypeScript and all nine tests passed; Expo Doctor passed 21/21. Both platform exports also passed in hosted checks.
+- HANDOFF.md covers setup, local builds, demo installation, cloud/test builds, mentor review, physical-device/accessibility checks, signing ownership, dependency review and rollback. SETUP.md and README link to the runnable workflow.
+- Expo reports `Not logged in`; developer-account/project ownership, Apple signing/provisioning and Play access remain unverified. No signed internal distribution, physical iPhone install or public-store approval is claimed.

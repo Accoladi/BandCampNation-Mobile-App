@@ -1,0 +1,18 @@
+{
+  "cli": { "version": "24.10.0", "requireCommit": true },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "node": "24.21.0",
+      "android": { "buildType": "apk" },
+      "ios": { "simulator": false },
+      "env": { "EXPO_PUBLIC_SITE_URL": "https://bandcampnation.com" }
+    },
+    "simulator": {
+      "distribution": "internal",
+      "node": "24.21.0",
+      "ios": { "simulator": true },
+      "env": { "EXPO_PUBLIC_SITE_URL": "https://bandcampnation.com" }
+    }
+  }
+}

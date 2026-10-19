@@ -22,7 +22,7 @@ The standard-library-only driver uses fresh native accessibility trees, avoids c
 
 The `Native mobile QA` GitHub workflow builds an unsigned **iOS simulator** Release app with embedded JavaScript/media and runs XCTest UI journeys for Home, article/book reading, live radio/background pause, Trivia, a Tic Tap Tone win and bundled Name That Tune. It retains screenshots, `.xcresult`, build logs and a simulator `.app` archive. No Apple signing account is needed for that simulator target. Pushes changing its workflow/test source start it; later app changes can be tested with manual workflow dispatch.
 
-The final Android Release APK passed all nine stages; the checked-in report and selected screenshots are linked in PROGRESS.md. The hosted iOS job must actually succeed before being recorded as passed. The iOS simulator archive cannot install on a physical iPhone.
+The Android Release APK passed all nine stages. The final hosted iOS run passed the complete native XCTest journey. Reports, run links and selected screenshots are linked in PROGRESS.md. The iOS simulator archive cannot install on a physical iPhone; physical-device and human accessibility acceptance remains open.
 
 ## Defects found during implementation
 
@@ -33,6 +33,8 @@ The final Android Release APK passed all nine stages; the checked-in report and 
 - Debug-only Expo connection-warning overlays interfered with some UI taps. Final offline/full-game QA uses an embedded-bundle Release APK.
 - Expo Doctor identified six SDK 57 patch mismatches; aligned them within SDK 57 rather than changing framework generation.
 - Hosted Xcode rejected an unnamed generated UI-test product; the target now sets its product name explicitly.
+- iOS grouped a mode button's icon/title/description into one accessibility label; the test now also locates grouped buttons by contained label text.
+- Screenshot review found clipped condensed iOS display text and a tight brand line height. The app now uses the iOS system display font, adequate brand line height and headers that grow with text.
 
 ## Manual acceptance still required
 

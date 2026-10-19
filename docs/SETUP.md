@@ -11,7 +11,7 @@ npm ci
 npm start
 ```
 
-Install the compatible Expo Go version on a phone and scan the QR code on the same network. `npm run android` / `npm run ios` opens a configured emulator/simulator. iOS simulation requires full Xcode selected with `xcode-select`, not just Command Line Tools. Android requires a running Android Studio AVD or a USB-debugging device.
+Install the compatible Expo Go version on a phone and scan the QR code on the same network. `npm run android` / `npm run ios` builds and opens the native Debug app on a configured emulator/simulator. iOS simulation requires full Xcode selected with `xcode-select`, not just Command Line Tools. Android requires JDK 21, SDK 36 and a running AVD or a USB-debugging device.
 
 ```sh
 npm run check
