@@ -6,13 +6,13 @@
     "node": "24.x"
   },
   "dependencies": {
-    "expo": "~57.0.26",
+    "expo": "~57.0.30",
     "expo-asset": "~57.0.15",
     "expo-audio": "~57.0.5",
     "expo-constants": "~57.0.16",
-    "expo-linking": "~57.0.11",
-    "expo-router": "~57.0.24",
-    "expo-splash-screen": "~57.0.9",
+    "expo-linking": "~57.0.13",
+    "expo-router": "~57.0.28",
+    "expo-splash-screen": "~57.0.10",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.4",
     "react": "19.2.3",

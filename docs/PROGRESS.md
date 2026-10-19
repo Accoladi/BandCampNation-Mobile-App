@@ -93,3 +93,13 @@ Performed October 19, 2026. Status: **implementation and standalone Android reco
 - Standalone API 36 ARM64 APK checks passed background → foreground → paused, forced Wi-Fi/data loss → radio error, network restoration → retry → playback → pause. Native audio-state inspection after navigating to Articles showed the app's players paused.
 - Evidence: [background paused](evidence/android-background-paused.png), [offline radio](evidence/android-radio-offline.png), [restored playback](evidence/android-radio-recovered.png).
 - Physical headset/call interruptions and human screen-reader testing remain open. Local full Xcode remains unavailable; hosted iOS simulator QA is being prepared next.
+
+## Run Android/iOS device QA and fix MVP defects
+
+Performed October 19, 2026. Status: **QA in progress; hosted iOS and final embedded-bundle Android runs pending**.
+
+- Added a repeatable native Android driver and hosted iOS Release-build/XCTest workflow with screenshot/result/demo artifacts. Local Python/Ruby/Swift syntax and workflow YAML checks passed.
+- Previous native Android feature and standalone recovery checks are recorded above. Final full-game/offline/large-text checks are moving to an embedded-bundle Release APK, avoiding debug-only warning overlays.
+- Applied Expo Doctor's six recommended SDK 57 patch updates. `npm run check` passed afterward. Compatible lockfile security updates removed the reported critical advisory; remaining upstream entries are documented in DEPENDENCY_REVIEW.md.
+- Current Android/iOS exports passed a server SDK/credential-marker check. No website/server source was changed.
+- This commit starts hosted iOS QA. Actual workflow/Android results must be added before reporting those checks as passed. Physical-device and assistive-technology acceptance remains open.

@@ -3,8 +3,9 @@ node_modules/
 expo-env.d.ts
 dist/
 artifacts/
-android/
-ios/
+/android/
+/ios/
+__pycache__/
 .env
 .env.*
 !.env.example

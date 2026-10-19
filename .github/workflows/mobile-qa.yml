@@ -1,0 +1,104 @@
+name: Native mobile QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/acc-294-mobile-mvp, main]
+    paths: ['.github/workflows/mobile-qa.yml', 'scripts/ios/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-mobile-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  EXPO_NO_TELEMETRY: '1'
+  EXPO_PUBLIC_SITE_URL: https://bandcampnation.com
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run export:android && npm run export:ios
+
+  ios-simulator:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Generate native iOS project
+        run: npx expo prebuild --platform ios --no-install
+      - name: Add native UI smoke target
+        run: ruby scripts/ios/configure-smoke.rb
+      - name: Install CocoaPods
+        working-directory: ios
+        run: pod install
+      - name: Boot an available iPhone simulator
+        run: |
+          mkdir -p artifacts
+          xcodebuild -version | tee artifacts/xcode-version.txt
+          xcrun simctl list devices available -j > artifacts/ios-devices.json
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open('artifacts/ios-devices.json'))
+          devices = [d for group in data['devices'].values() for d in group if d['name'].startswith('iPhone') and d.get('isAvailable', True)]
+          if not devices: raise SystemExit('No available iPhone simulator')
+          device = devices[0]
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write('BCN_SIMULATOR_ID=' + device['udid'] + '\n')
+          import subprocess
+          if device['state'] != 'Booted': subprocess.run(['xcrun', 'simctl', 'boot', device['udid']], check=True)
+          subprocess.run(['xcrun', 'simctl', 'bootstatus', device['udid'], '-b'], check=True)
+          PY
+      - name: Build embedded-bundle simulator app and run native UI journeys
+        run: |
+          set -o pipefail
+          NODE_ENV=production xcodebuild test \
+            -workspace ios/BandCampNation.xcworkspace \
+            -scheme BandCampNation -configuration Release \
+            -sdk iphonesimulator -destination "id=$BCN_SIMULATOR_ID" \
+            -derivedDataPath artifacts/ios-derived \
+            -resultBundlePath artifacts/ios-results.xcresult \
+            -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO \
+            | tee artifacts/ios-build.log
+      - name: Package simulator demo
+        if: always()
+        run: |
+          if [ -d artifacts/ios-derived/Build/Products/Release-iphonesimulator/BandCampNation.app ]; then
+            ditto -c -k --sequesterRsrc --keepParent \
+              artifacts/ios-derived/Build/Products/Release-iphonesimulator/BandCampNation.app \
+              artifacts/BandCampNation-iOS-Simulator.zip
+          fi
+          if [ -d artifacts/ios-results.xcresult ]; then
+            xcrun xcresulttool export attachments --path artifacts/ios-results.xcresult --output-path artifacts/ios-screenshots
+          fi
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: ios-simulator-demo-and-qa
+          retention-days: 14
+          path: |
+            artifacts/*.zip
+            artifacts/*.log
+            artifacts/*.txt
+            artifacts/ios-screenshots/
+            artifacts/ios-results.xcresult/
