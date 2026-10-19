@@ -48,7 +48,7 @@ export function parseTracks(payload: unknown): Track[] {
 }
 
 export async function fetchTracks(signal?: AbortSignal, request: typeof fetch = fetch): Promise<Track[]> {
-  const response = await request(`${SITE_ORIGIN}/api/radio/songs`, { signal, credentials: 'omit', headers: { Accept: 'application/json' } });
+  const response = await request(`${SITE_ORIGIN}/api/radio/songs`, { signal, cache: 'no-store', credentials: 'omit', headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error(`Radio is unavailable (${response.status}). Check your connection and try again.`);
   return parseTracks(await response.json());
 }

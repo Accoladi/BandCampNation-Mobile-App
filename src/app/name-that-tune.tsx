@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GameScreen } from '@/components/GameScreen';
 import { Heading } from '@/components/ui';
+import { useAudioLifecycle } from '@/features/audio/useAudioLifecycle';
 import { TUNE_CLIPS } from '@/features/content/audioAssets';
 import {
   createTuneGame,
@@ -46,11 +47,13 @@ function NameThatTuneGame() {
   const [hasListened, setHasListened] = useState(false);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [hintsRevealed, setHintsRevealed] = useState(0);
+  const [playbackError, setPlaybackError] = useState('');
   const currentTune = rounds[roundIndex];
   const finished = rounds.length > 0 && roundIndex >= rounds.length;
   const audioSource = currentTune ? TUNE_CLIPS[currentTune.file] : null;
   const player = useAudioPlayer(audioSource, { updateInterval: 2000 });
   const status = useAudioPlayerStatus(player);
+  const audioSetupError = useAudioLifecycle(player);
   const options = useMemo(
     () => (currentTune ? createTuneOptions(currentTune) : []),
     [currentTune],
@@ -65,6 +68,7 @@ function NameThatTuneGame() {
     setHasListened(false);
     setHintsUsed(0);
     setHintsRevealed(0);
+    setPlaybackError('');
   };
 
   const togglePlayback = async () => {
@@ -73,9 +77,11 @@ function NameThatTuneGame() {
       return;
     }
 
-    if (status.didJustFinish) await player.seekTo(0);
-    setHasListened(true);
-    player.play();
+    try {
+      if (status.didJustFinish) await player.seekTo(0);
+      player.play();
+      setHasListened(true);
+    } catch { setPlaybackError('This clip could not play. Retry the clip.'); }
   };
 
   const answer = (tune: Tune) => {
@@ -90,6 +96,7 @@ function NameThatTuneGame() {
     setSelectedFile(null);
     setHasListened(false);
     setHintsRevealed(0);
+    setPlaybackError('');
     setRoundIndex((value) => value + 1);
   };
 
@@ -97,6 +104,7 @@ function NameThatTuneGame() {
     if (audioSource === null) return;
     player.replace(audioSource);
     setHasListened(false);
+    setPlaybackError('');
   };
 
   return (
@@ -140,10 +148,10 @@ function NameThatTuneGame() {
             <Text style={styles.round}>Score {score}</Text>
           </View>
 
-          {status.error ? (
+          {status.error || playbackError || audioSetupError ? (
             <View accessibilityLiveRegion="polite" style={styles.resourceState}>
               <Text style={styles.stateTitle}>Could not load this clip</Text>
-              <Text style={styles.stateText}>Reload this bundled clip and try again.</Text>
+              <Text style={styles.stateText}>{playbackError || audioSetupError || 'Reload this bundled clip and try again.'}</Text>
               <Pressable
                 accessibilityRole="button"
                 onPress={retryAudio}

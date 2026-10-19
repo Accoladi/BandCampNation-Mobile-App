@@ -1,9 +1,12 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, AppState, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { AppScreen } from '@/components/AppScreen';
+import { RemoteArtwork } from '@/components/RemoteArtwork';
 import { AppButton, Heading, PageHeader } from '@/components/ui';
+import { useAudioLifecycle } from '@/features/audio/useAudioLifecycle';
 import { fetchTracks, type Track } from '@/features/radio/service';
 import { colors } from '@/theme';
 
@@ -21,6 +24,8 @@ export default function RadioScreen() {
   const [loadedId, setLoadedId] = useState<string | null>(null);
   const player = useAudioPlayer(null, { updateInterval: 2000 });
   const status = useAudioPlayerStatus(player);
+  const audioSetupError = useAudioLifecycle(player);
+  const lastFinished = useRef<string | null>(null);
   const current = tracks.find(track => track.id === selected) ?? tracks[0];
   const filtered = tracks.filter(track => `${track.title} ${track.artist} ${track.tags.join(' ')}`.toLowerCase().includes(search.trim().toLowerCase()));
 
@@ -34,7 +39,8 @@ export default function RadioScreen() {
     return () => { active = false; clearTimeout(timeout); controller.abort(); };
   }, [attempt]);
 
-  const select = (track: Track) => {
+  const select = useCallback((track: Track, finishedId: string | null = null) => {
+    lastFinished.current = finishedId;
     setPlayError('');
     setSelected(track.id);
     try {
@@ -43,7 +49,20 @@ export default function RadioScreen() {
       setLoadedId(track.id);
       player.play();
     } catch { setPlayError('This track could not play. Check your connection and retry.'); }
-  };
+  }, [player]);
+
+  useEffect(() => {
+    if (loadedId && !tracks.some(track => track.id === loadedId)) player.pause();
+  }, [loadedId, tracks, player]);
+
+  useFocusEffect(useCallback(() => {
+    const subscription = player.addListener('playbackStatusUpdate', event => {
+      if (event.didJustFinish && current && loadedId === current.id && tracks.length > 1 && AppState.currentState === 'active' && lastFinished.current !== current.id) {
+        select(tracks[(tracks.findIndex(track => track.id === current.id) + 1) % tracks.length], current.id);
+      }
+    });
+    return () => subscription.remove();
+  }, [player, current, loadedId, tracks, select]));
 
   const toggle = async () => {
     if (!current) return;
@@ -59,7 +78,7 @@ export default function RadioScreen() {
     select(tracks[(index + offset + tracks.length) % tracks.length]);
   };
   const seek = (offset: number) => {
-    const position = Math.max(0, Math.min(status.duration || 0, status.currentTime + offset));
+    const position = Math.max(0, Math.min(player.duration || 0, player.currentTime + offset));
     player.seekTo(position).catch(() => setPlayError('Could not seek. Select the track again to retry.'));
   };
 
@@ -71,7 +90,7 @@ export default function RadioScreen() {
       {!loading && !error && !tracks.length ? <Text style={styles.body}>No published tracks are available yet.</Text> : null}
       {current ? (
         <View style={styles.player}>
-          {current.coverImageUrl ? <Image source={{ uri: current.coverImageUrl }} style={styles.cover} accessibilityLabel={`${current.title} artwork`} /> : null}
+          {current.coverImageUrl ? <RemoteArtwork key={current.coverImageUrl} uri={current.coverImageUrl} title={current.title} /> : null}
           <Heading level={2} style={styles.title}>{current.title}</Heading>
           <Text style={styles.body}>{current.artist}</Text>
           <Text accessibilityLiveRegion="polite" style={styles.body}>{loadedId === current.id ? status.error ? 'Playback unavailable' : status.isBuffering ? 'Buffering…' : status.playing ? 'Playing' : 'Paused' : 'Ready to listen'}</Text>
@@ -84,12 +103,13 @@ export default function RadioScreen() {
             <Text accessibilityRole="progressbar" accessibilityLabel="Playback position" accessibilityValue={{ min: 0, max: Math.max(1, status.duration), now: Math.min(status.currentTime, Math.max(1, status.duration)) }} style={styles.body}>{time(status.currentTime)} / {time(status.duration)}</Text>
             <View style={styles.controls}><AppButton label="Back 15 seconds" variant="secondary" onPress={() => seek(-15)} /><AppButton label="Forward 15 seconds" variant="secondary" onPress={() => seek(15)} /></View>
           </> : null}
-          {playError || status.error ? <View accessibilityLiveRegion="polite" style={styles.state}><Text style={styles.body}>{playError || 'This track could not load. Check your connection and retry.'}</Text><AppButton label="Retry track" onPress={() => select(current)} /></View> : null}
-          <Text style={styles.note}>Radio streams online. Reading and bundled games work offline.</Text>
+          {playError || status.error || audioSetupError ? <View accessibilityLiveRegion="polite" style={styles.state}><Text style={styles.body}>{playError || audioSetupError || 'This track could not load. Check your connection and retry.'}</Text><AppButton label="Retry track" onPress={() => select(current)} /></View> : null}
+          <Text style={styles.note}>Radio streams online and pauses when you leave this screen or background the app. Reading and bundled games work offline.</Text>
         </View>
       ) : null}
       <TextInput accessibilityLabel="Search radio tracks" placeholder="Search songs, artists or tags" placeholderTextColor={colors.textMuted} value={search} onChangeText={value => { setSearch(value); setLimit(20); }} style={styles.search} />
       <Text accessibilityLiveRegion="polite" style={styles.body}>{filtered.length} tracks</Text>
+      <AppButton label="Refresh tracks" variant="secondary" disabled={loading} onPress={() => { setLoading(true); setError(''); setAttempt(value => value + 1); }} />
       {tracks.length > 0 && filtered.length === 0 ? <Text style={styles.body}>No matching tracks. Try another search.</Text> : null}
       {filtered.slice(0, limit).map(track => <Pressable key={track.id} accessibilityRole="button" accessibilityLabel={`Play ${track.title}`} accessibilityState={{ selected: current?.id === track.id }} onPress={() => select(track)} style={[styles.track, current?.id === track.id && styles.selected]}><Text style={styles.trackTitle}>{track.title}</Text><Text style={styles.body}>{track.artist}</Text></Pressable>)}
       {filtered.length > limit ? <View style={styles.state}><AppButton label="Show more tracks" variant="secondary" onPress={() => setLimit(value => value + 20)} /></View> : null}
@@ -102,7 +122,6 @@ const styles = StyleSheet.create({
   body: { color: colors.textMuted, fontSize: 16, lineHeight: 25 },
   title: { color: colors.ink, fontSize: 28, fontWeight: '800' },
   player: { marginVertical: 24, padding: 20, backgroundColor: colors.white, borderRadius: 16, gap: 16 },
-  cover: { width: '100%', height: 200, borderRadius: 12 },
   controls: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   note: { color: colors.textMuted, fontSize: 14, lineHeight: 22 },
   search: { padding: 14, minHeight: 52, borderColor: colors.textMuted, borderWidth: 1, borderRadius: 12, marginBottom: 16, color: colors.ink, fontSize: 16 },

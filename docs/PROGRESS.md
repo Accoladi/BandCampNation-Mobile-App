@@ -80,3 +80,16 @@ Performed October 19, 2026. Status: **native adaptation and Android check comple
 - `npm run check` passed (nine checks including real clip existence, clues, unique rounds and four valid options).
 - Actual API 36 ARM64 Expo Go test passed bundled audio playback → clue → answer reveal → next round. [Audio game evidence](evidence/android-name-that-tune.png).
 - GAME_PARITY.md records every source experience, remaining timed scoring/visual differences and the proposed follow-up decisions. Mentor review has not occurred; no full game-parity claim is made.
+
+## Add network recovery, lifecycle handling and app polish
+
+Performed October 19, 2026. Status: **implementation and standalone Android recovery checks complete; iOS/physical interruption checks pending**.
+
+- Added shared audio lifecycle handling, exclusive focus/no recording, explicit pause on screen blur and both background/foreground transitions. Native testing exposed Expo Audio's automatic foreground resume; pausing again on foreground fixes it.
+- Added active/focused radio completion advancement, native-position seeking, catalog refresh retaining prior data on error, uncached public fetches, artwork retry/fallback, clip exception handling, unknown-route recovery and a root retry boundary.
+- Fixed the native splash plugin's missing drawable by explicitly configuring the original image. The Android debug APK compiled successfully with JDK 21/SDK 36 and installed under `com.bandcampnation.mobile`.
+- Debug launch exposed a local IPv6-only Metro binding; LAN binding resolved it. The installed APK then cold-launched in 3.1 seconds. RECOVERY.md records the repeatable connection fix.
+- `npm run check` passed; current iOS and Android Hermes exports passed.
+- Standalone API 36 ARM64 APK checks passed background → foreground → paused, forced Wi-Fi/data loss → radio error, network restoration → retry → playback → pause. Native audio-state inspection after navigating to Articles showed the app's players paused.
+- Evidence: [background paused](evidence/android-background-paused.png), [offline radio](evidence/android-radio-offline.png), [restored playback](evidence/android-radio-recovered.png).
+- Physical headset/call interruptions and human screen-reader testing remain open. Local full Xcode remains unavailable; hosted iOS simulator QA is being prepared next.
