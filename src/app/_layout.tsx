@@ -4,8 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 export default function RootLayout() {
   return (
     <>
-      <StatusBar style="dark" />
-      <Stack screenOptions={{ headerTitle: 'BandCampNation', contentStyle: { backgroundColor: '#f7fbff' } }} />
+      <StatusBar style="light" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#f7fbff' } }} />
     </>
   );
 }

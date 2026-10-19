@@ -22,3 +22,14 @@ Performed October 19, 2026. Status: **implementation complete; iOS launch accept
 - iOS launch remains blocked: full Xcode and `simctl` are absent. No iOS runtime claim is made.
 - Setup commands and environment/credential boundaries are in SETUP.md. The installed Homebrew Node 24 has a missing simdjson dylib; verification used an isolated official Node 24 runtime rather than changing system software.
 - Review/demo: `npm ci && npm start`, then open on Android with Expo Go. GitHub push evidence is the remote commit matching this task title.
+
+## Build native navigation, Home, theme and accessibility
+
+Performed October 19, 2026. Status: **implementation and Android navigation checks complete; assistive-technology acceptance pending**.
+
+- Added branded native Home, shared header/menu, and Home/Radio/Articles/Books/Entertainment destinations using Expo Router.
+- Adapted original BandCampNation hero/logo/copy and palette. Reused the reference shell and 48-point controls, scalable text, semantic labels/headings and modal isolation; made the menu scrollable for large text.
+- Fixed a real native compatibility issue found during testing: Expo Router's Slot requires flattened styles on Link children. Primary navigation now uses flattened styles; brand styles are plain objects.
+- `npm run check` passed (lint, TypeScript, manifest and route checks).
+- API 36 ARM64 Expo Go UI-tree journey passed Radio, Articles, Books, Entertainment, return Home and menu open/close. Screenshots: [Home](evidence/android-home.png), [menu](evidence/android-navigation.png).
+- Remaining destination bodies are deliberately implemented in their following tasks. Human VoiceOver/TalkBack and iOS checks remain open; see ACCESSIBILITY.md.
