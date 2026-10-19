@@ -33,3 +33,15 @@ Performed October 19, 2026. Status: **implementation and Android navigation chec
 - `npm run check` passed (lint, TypeScript, manifest and route checks).
 - API 36 ARM64 Expo Go UI-tree journey passed Radio, Articles, Books, Entertainment, return Home and menu open/close. Screenshots: [Home](evidence/android-home.png), [menu](evidence/android-navigation.png).
 - Remaining destination bodies are deliberately implemented in their following tasks. Human VoiceOver/TalkBack and iOS checks remain open; see ACCESSIBILITY.md.
+
+## Connect content services and migrate articles/books reader
+
+Performed October 19, 2026. Status: **implementation and Android reader checks complete; iOS device acceptance pending**.
+
+- Migrated all 15 original articles and both complete books: 64 native reading sections total, including 33 book sections. Bundled the original covers and decoded text; no server modules/credentials or HTML runtime enter Metro.
+- Added searchable native libraries, article/chapter reading, book contents, previous/next sections, scalable/selectable text and missing-document/section handling. Navigating sections resets scroll position.
+- Added a repeatable Node/Python build-time importer with a source revision, parser self-check and catalog checks. Text and covers work offline; inline web formatting simplifications are documented in CONTENT.md.
+- `npm run check` passed. Parser, inventory and section-data tests passed.
+- API 36 ARM64 Expo Go journey passed the 15-article catalog, article opening, book contents and a book section opened while emulator Wi-Fi/data were disabled. Networking was restored afterward.
+- Screenshots: [native article](evidence/android-reader.png), [offline book](evidence/android-book-offline.png).
+- Public radio API shape was verified separately: 81 published, unrestricted HTTPS-playable tracks returned; radio playback is the next task.

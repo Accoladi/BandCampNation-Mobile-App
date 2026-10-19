@@ -1,6 +1,3 @@
-import { AppScreen } from '@/components/AppScreen';
-import { PageHeader } from '@/components/ui';
+import { Library } from '@/components/Library';
 
-export default function Screen() {
-  return <AppScreen><PageHeader eyebrow="BandCampNation" title="Books" description="Read the complete BandCampNation books one section at a time." /></AppScreen>;
-}
+export default function Screen() { return <Library kind="book" />; }
