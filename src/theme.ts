@@ -26,7 +26,7 @@ export const colors = {
 } as const;
 
 export const displayFont = Platform.select({
-  ios: 'Avenir Next Condensed',
+  ios: 'System',
   android: 'sans-serif-condensed',
   default: 'sans-serif',
 });

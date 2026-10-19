@@ -1,6 +1,6 @@
 import { type Href, Link, usePathname } from 'expo-router';
 import { useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { primaryNavigation } from '@/features/navigation/routes';
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '900',
     letterSpacing: -0.8,
-    lineHeight: 15,
+    lineHeight: Platform.OS === 'ios' ? 22 : 15,
     textTransform: 'uppercase',
   },
   menuButton: {
