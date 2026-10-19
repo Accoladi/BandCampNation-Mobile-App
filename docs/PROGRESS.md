@@ -96,10 +96,11 @@ Performed October 19, 2026. Status: **implementation and standalone Android reco
 
 ## Run Android/iOS device QA and fix MVP defects
 
-Performed October 19, 2026. Status: **QA in progress; hosted iOS and final embedded-bundle Android runs pending**.
+Performed October 19, 2026. Status: **Android Release QA passed; hosted iOS QA in progress**.
 
 - Added a repeatable native Android driver and hosted iOS Release-build/XCTest workflow with screenshot/result/demo artifacts. Local Python/Ruby/Swift syntax and workflow YAML checks passed.
-- Previous native Android feature and standalone recovery checks are recorded above. Final full-game/offline/large-text checks are moving to an embedded-bundle Release APK, avoiding debug-only warning overlays.
+- Built and installed the standalone ARM64 Android Release APK with embedded JavaScript, all reading content and 40 MP3 clips. All nine native smoke stages passed: Home, offline article/book, live radio, background pause, complete 10/10 Trivia/replay, Tic Tap Tone tie, offline audio game and 200% text navigation. [Machine-readable result](evidence/android-release-report.json), [radio](evidence/android-release-radio.png), [offline audio](evidence/android-release-audio.png), [large text](evidence/android-release-large-text.png).
+- Release permission inspection found no microphone, storage or overlay permission. The demo is debug-key signed, not an internal/store signing artifact. APK SHA-256: `a38e09a310a73383a41a839910811361e601e6222a031b56f4ecbbff81f52078` (84,428,076 bytes).
 - Applied Expo Doctor's six recommended SDK 57 patch updates. `npm run check` passed afterward. Compatible lockfile security updates removed the reported critical advisory; remaining upstream entries are documented in DEPENDENCY_REVIEW.md.
 - Current Android/iOS exports passed a server SDK/credential-marker check. No website/server source was changed.
-- This commit starts hosted iOS QA. Actual workflow/Android results must be added before reporting those checks as passed. Physical-device and assistive-technology acceptance remains open.
+- Expo Doctor passed 21/21. Hosted checks passed clean install, lint, TypeScript, all nine tests and both exports. The [first iOS run](https://github.com/Accoladi/BandCampNation-Mobile-App/actions/runs/39282437969) generated the project/pods and booted a simulator, then failed because the new UI-test target had no product name. Set its explicit product name and reran the native build; iOS acceptance is pending that actual result. Physical-device and assistive-technology acceptance remains open.

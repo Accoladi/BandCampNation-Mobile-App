@@ -22,7 +22,7 @@ The standard-library-only driver uses fresh native accessibility trees, avoids c
 
 The `Native mobile QA` GitHub workflow builds an unsigned **iOS simulator** Release app with embedded JavaScript/media and runs XCTest UI journeys for Home, article/book reading, live radio/background pause, Trivia, a Tic Tap Tone win and bundled Name That Tune. It retains screenshots, `.xcresult`, build logs and a simulator `.app` archive. No Apple signing account is needed for that simulator target. Pushes changing its workflow/test source start it; later app changes can be tested with manual workflow dispatch.
 
-The hosted job and the final Android Release APK check must actually succeed before being recorded as passed. The iOS simulator archive cannot install on a physical iPhone.
+The final Android Release APK passed all nine stages; the checked-in report and selected screenshots are linked in PROGRESS.md. The hosted iOS job must actually succeed before being recorded as passed. The iOS simulator archive cannot install on a physical iPhone.
 
 ## Defects found during implementation
 
@@ -32,6 +32,7 @@ The hosted job and the final Android Release APK check must actually succeed bef
 - Expo Audio automatically resumed Android audio on foreground. The app now pauses on both app-state transitions and requires explicit playback.
 - Debug-only Expo connection-warning overlays interfered with some UI taps. Final offline/full-game QA uses an embedded-bundle Release APK.
 - Expo Doctor identified six SDK 57 patch mismatches; aligned them within SDK 57 rather than changing framework generation.
+- Hosted Xcode rejected an unnamed generated UI-test product; the target now sets its product name explicitly.
 
 ## Manual acceptance still required
 

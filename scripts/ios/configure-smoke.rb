@@ -16,6 +16,7 @@ unless project.targets.any? { |target| target.name == name }
   group = project.main_group.new_group(name, name)
   target.source_build_phase.add_file_reference(group.new_file('SmokeTests.swift'))
   target.build_configurations.each do |config|
+    config.build_settings['PRODUCT_NAME'] = name
     config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.bandcampnation.mobile.smoke'
     config.build_settings['TEST_TARGET_NAME'] = app_target.name
     config.build_settings['GENERATE_INFOPLIST_FILE'] = 'YES'

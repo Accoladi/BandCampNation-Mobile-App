@@ -1,0 +1,18 @@
+{
+  "performedAt": "2026-10-19T16:49:25.196421+00:00",
+  "package": "com.bandcampnation.mobile",
+  "nativeRuntime": "Android",
+  "apiLevel": "36",
+  "passed": [
+    "home",
+    "offline-article",
+    "offline-book",
+    "radio-playing",
+    "background-paused",
+    "trivia-complete",
+    "tic-tie",
+    "offline-audio-game",
+    "large-text"
+  ],
+  "complete": true
+}
