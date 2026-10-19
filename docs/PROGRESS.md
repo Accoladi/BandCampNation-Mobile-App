@@ -69,3 +69,14 @@ Performed October 19, 2026. Status: **implementation and Android game checks com
 - Actual API 36 ARM64 Expo Go checks passed Trivia correct-answer feedback/score/progression, a two-player Trombone win/reset, and a single-player Drummer center response.
 - Screenshots: [Trivia](evidence/android-trivia.png), [Tic Tap Tone win](evidence/android-tic-win.png).
 - Generated an ignored native Android project and started local debug compilation to prepare app-identity QA. Generated native folders and signing material are not committed.
+
+## Adapt audio games and audit remaining mobile game parity
+
+Performed October 19, 2026. Status: **native adaptation and Android check complete; mentor parity review and iOS acceptance pending**.
+
+- Added native Name That Tune using all 40 original BandCampNation ten-second snippets and three-clue sets, bundled for offline use.
+- Reused tested shuffle/unique-round/choice generation and the reference native audio screen. Added three clues per game, listen-before-answer, score/results/replay, loading/error/retry and native progress/play/pause.
+- Entertainment now links to the native audio game. Name That College and remaining DOM/canvas games retain explicit online browser handoffs.
+- `npm run check` passed (nine checks including real clip existence, clues, unique rounds and four valid options).
+- Actual API 36 ARM64 Expo Go test passed bundled audio playback → clue → answer reveal → next round. [Audio game evidence](evidence/android-name-that-tune.png).
+- GAME_PARITY.md records every source experience, remaining timed scoring/visual differences and the proposed follow-up decisions. Mentor review has not occurred; no full game-parity claim is made.

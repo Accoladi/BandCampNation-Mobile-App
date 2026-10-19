@@ -24,9 +24,13 @@ export default function EntertainmentScreen() {
         <AppButton label="Play Tic Tap Tone" onPress={() => router.push('/tic-tap-tone')} />
       </View>
       <View style={styles.card}>
+        <Heading level={2} style={styles.title}>Name That Tune</Heading>
+        <Text style={styles.body}>Listen to original ten-second marching-band clips. Ten rounds, four choices and three clues per game. Available offline.</Text>
+        <AppButton label="Play Name That Tune" onPress={() => router.push('/name-that-tune')} />
+      </View>
+      <View style={styles.card}>
         <Heading level={2} style={styles.title}>More ways to play</Heading>
         <Text style={styles.body}>These experiences open the BandCampNation website and need an internet connection.</Text>
-        <AppButton label="Name That Tune · Website" variant="secondary" onPress={() => openWebsite('/entertainment/name-that-tune')} />
         <AppButton label="Marching Band Crossword · Website" variant="secondary" onPress={() => openWebsite('/entertainment/marching-band-crossword')} />
         <AppButton label="Name That College · Website" variant="secondary" onPress={() => openWebsite('/entertainment/college-fight-songs')} />
         <AppButton label="Coloring Book · Website" variant="secondary" onPress={() => openWebsite('/entertainment/coloring-pages')} />
