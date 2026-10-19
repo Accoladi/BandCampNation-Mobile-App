@@ -14,6 +14,11 @@ final class SmokeTests: XCTestCase {
                 element.tap()
                 return
             }
+            let groupedButton = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", label)).firstMatch
+            if groupedButton.exists && groupedButton.isHittable {
+                groupedButton.tap()
+                return
+            }
             app.swipeUp()
         }
         XCTFail("Missing visible control: \(label)")
