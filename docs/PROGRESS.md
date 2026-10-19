@@ -57,3 +57,15 @@ Performed October 19, 2026. Status: **implementation and Android streaming check
 - Actual API 36 ARM64 Expo Go playback passed play → pause → next → playing → pause. Native playback progress advanced (observed 0:25 / 2:44 on a streamed track). [Playback screenshot](evidence/android-radio-playing.png).
 - The Android UI driver now avoids stale XML after UIAutomator idle failures. Playback status updates use a two-second interval to reduce screen re-renders; media playback itself remains native.
 - Expo account check returned `Not logged in`. EAS cloud/signing/distribution remains blocked until account setup. App-background/navigation and interrupted-network recovery checks are covered in the recovery task.
+
+## Build entertainment hub and migrate Trivia/Tic-Tac-Toe
+
+Performed October 19, 2026. Status: **implementation and Android game checks complete; iOS device acceptance pending**.
+
+- Added native entertainment cards with original BandCampNation artwork and two offline playable games.
+- Reused the BetweenBands native Trivia screen and ten source-matched questions with scoring, answer feedback, next/results and replay. Reused native Tic Tap Tone with single/two-player modes, win/tie, reset and computer win/block moves.
+- Other game/activity buttons explicitly open the BandCampNation website and require internet; URL opening has an error state. No remaining web experience is represented as native parity.
+- `npm run check` passed (eight checks, including every Tic-Tac-Toe winning line, tie, computer win/block/center and trivia answer data).
+- Actual API 36 ARM64 Expo Go checks passed Trivia correct-answer feedback/score/progression, a two-player Trombone win/reset, and a single-player Drummer center response.
+- Screenshots: [Trivia](evidence/android-trivia.png), [Tic Tap Tone win](evidence/android-tic-win.png).
+- Generated an ignored native Android project and started local debug compilation to prepare app-identity QA. Generated native folders and signing material are not committed.
